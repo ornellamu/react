@@ -1,7 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { addPlan } from "../plans";
 
 const Home = () => {
+  const [plan, setPlan] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleAddPlan = (event) => {
+    event.preventDefault();
+    const trimmedPlan = plan.trim();
+
+    if (!trimmedPlan) {
+      setError("Write a plan before adding it.");
+      return;
+    }
+
+    addPlan(trimmedPlan);
+    navigate("/created-plans");
+  };
+
   return (
     <div className="min-h-screen bg-stone-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
@@ -19,16 +37,35 @@ const Home = () => {
         </section>
 
         <section className="py-10 sm:py-12" aria-labelledby="plans-heading">
-          <h2 id="plans-heading" className="mb-3 text-2xl font-bold">My plans</h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-4">
+            <h2 id="plans-heading" className="text-2xl font-bold">My plans</h2>
+          </div>
           <p className="mb-5 text-slate-600">Write down what you want to get done.</p>
-          <label htmlFor="plans" className="sr-only">Your plans</label>
-          <textarea
-            id="plans"
-            name="plans"
-            rows="12"
-            placeholder="Write your plans here..."
-            className="block w-full resize-y rounded-md border border-slate-300 bg-white p-4 leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
-          />
+          <form onSubmit={handleAddPlan}>
+            <label htmlFor="plans" className="sr-only">Your plans</label>
+            <textarea
+              id="plans"
+              name="plans"
+              rows="12"
+              value={plan}
+              onChange={(event) => {
+                setPlan(event.target.value);
+                setError("");
+              }}
+              placeholder="Write your plans here..."
+              aria-describedby={error ? "plan-error" : undefined}
+              className="block w-full resize-y rounded-md border border-slate-300 bg-white p-4 leading-relaxed text-slate-900 outline-none placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+            />
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <button
+                type="submit"
+                className="rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
+              >
+                Add plan
+              </button>
+              {error && <p id="plan-error" role="alert" className="text-sm text-red-700">{error}</p>}
+            </div>
+          </form>
         </section>
       </main>
     </div>
