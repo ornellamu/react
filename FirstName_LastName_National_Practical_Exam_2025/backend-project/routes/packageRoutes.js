@@ -7,7 +7,7 @@ const {
     addPackage,
     updatePackage,
     deletePackage
-} = require('../controllers/packageccontroller');
+} = require('../controllers/packageController');
 
 // Package endpoints
 router.get('/', getPackages);

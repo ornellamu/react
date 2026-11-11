@@ -1,30 +1,44 @@
+import { useState } from 'react';
+import Packages from './pages/Packages';
 
-import { useState } from 'react'
+import Cars from './pages/Cars';
+import ServicePackages from './pages/servicePackages';
 
 function App() {
-  const [activePage, setActivePage] = useState('Dashboard')
+  const [activePage, setActivePage] = useState('Dashboard');
 
   const menuItems = [
     'Dashboard',
     'Cars',
     'Packages',
-    'Services',
-    'Payments',
+    'Service Package',
+    'Payment',
     'Reports',
-  ]
+    'Logout'
+  ];
+
+  // Handle menu navigation
+  const handleMenuClick = (item) => {
+    if (item === 'Logout') {
+      alert('Logout is not available because this system has no login session.');
+      setActivePage('Dashboard');
+    } else {
+      setActivePage(item);
+    }
+  };
 
   const statistics = [
     { title: 'Total Cars', value: '125', icon: '🚗', color: 'bg-blue-100' },
     { title: 'Total Services', value: '86', icon: '🧼', color: 'bg-green-100' },
     { title: 'Total Payments', value: '75', icon: '💳', color: 'bg-purple-100' },
     { title: 'Total Sales', value: '850,000 RWF', icon: '💰', color: 'bg-orange-100' },
-  ]
+  ];
 
   const recentServices = [
     { plate: 'RAD123A', driver: 'John Doe', package: 'Basic Wash', price: '5,000 RWF', status: 'Paid' },
     { plate: 'RAE456B', driver: 'Mary Jane', package: 'Classic Wash', price: '10,000 RWF', status: 'Paid' },
     { plate: 'RAF789C', driver: 'Peter James', package: 'Premium Wash', price: '20,000 RWF', status: 'Pending' },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -44,13 +58,16 @@ function App() {
           {menuItems.map((item) => (
             <button
               key={item}
-              onClick={() => setActivePage(item)}
+              onClick={() => handleMenuClick(item)}
               className={`w-full text-left px-4 py-3 rounded-lg transition ${
                 activePage === item
                   ? 'bg-blue-600 text-white'
-                  : 'text-gray-300 hover:bg-slate-800'
+                  : item === 'Logout'
+                    ? 'text-red-300 hover:bg-red-900'
+                    : 'text-gray-300 hover:bg-slate-800'
               }`}
             >
+              {item === 'Logout' ? '↪ ' : ''}
               {item}
             </button>
           ))}
@@ -84,9 +101,9 @@ function App() {
 
         </header>
 
+        {/* Dashboard */}
         {activePage === 'Dashboard' && (
           <>
-            {/* Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
               {statistics.map((stat) => (
@@ -124,7 +141,6 @@ function App() {
               </h3>
 
               <div className="overflow-x-auto">
-
                 <table className="w-full text-left">
 
                   <thead>
@@ -143,13 +159,9 @@ function App() {
                         <td className="py-4 font-medium">
                           {service.plate}
                         </td>
-
                         <td>{service.driver}</td>
-
                         <td>{service.package}</td>
-
                         <td>{service.price}</td>
-
                         <td>
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             service.status === 'Paid'
@@ -164,29 +176,36 @@ function App() {
                   </tbody>
 
                 </table>
-
               </div>
 
             </div>
           </>
         )}
 
-        {activePage !== 'Dashboard' && (
+        {/* Packages page */}
+        {activePage === 'Packages' && <Packages />}
+
+        {/* Cars page */}
+        {activePage === 'Cars' && <Cars />}
+        {/* Service Packages page */}
+        {activePage === 'Service Package' && <ServicePackages />}
+
+        {/* Other pages - temporary placeholders */}
+        {['Cars', 'Service Package', 'Payment', 'Reports'].includes(activePage) && (
           <div className="bg-white rounded-xl p-10 shadow-sm">
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               {activePage} Management
             </h3>
 
             <p className="text-gray-500">
-              We will develop this module in the next stages.
+              This page will be developed in the next stages.
             </p>
           </div>
         )}
 
       </main>
-
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
